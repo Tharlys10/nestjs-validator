@@ -5,6 +5,7 @@ import { User } from './infra/typeorm/entities/User';
 import { UsersRepository } from './infra/typeorm/repositories/UsersRepository';
 import { CreateUserUseCase } from './useCases/createUser/CreateUserUseCase';
 import { DeleteUserUseCase } from './useCases/deleteUser/DeleteUserUseCase';
+import { FindAllUsersUseCase } from './useCases/findAllUsers/FindAllUsersUseCase';
 import { FindUserByIdUseCase } from './useCases/findUserById/FindUserByIdUseCase';
 import { UpdateUserUseCase } from './useCases/updateUser/UpdateUserUseCase';
 
@@ -13,6 +14,7 @@ import { UpdateUserUseCase } from './useCases/updateUser/UpdateUserUseCase';
   controllers: [UsersController],
   providers: [
     FindUserByIdUseCase,
+    FindAllUsersUseCase,
     CreateUserUseCase,
     UpdateUserUseCase,
     DeleteUserUseCase,

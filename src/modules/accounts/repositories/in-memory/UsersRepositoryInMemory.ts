@@ -1,4 +1,5 @@
 import { CreateUserDTO } from '../../dtos/CreateUserDTO';
+import { FindAllUsersDTO } from '../../dtos/FindAllUsersDTO';
 import { UpdateUserDTO } from '../../dtos/UpdateUserDTO';
 import { User } from '../../infra/typeorm/entities/User';
 import { IUsersRepository } from '../IUsersRepository';
@@ -12,6 +13,26 @@ class UsersRepositoryInMemory implements IUsersRepository {
 
   async findByEmail(email: string): Promise<User> {
     return this.users.find((user) => user.email === email);
+  }
+
+  async findAll({
+    name,
+    page = 1,
+    amount = 10,
+  }: FindAllUsersDTO): Promise<{ users: User[]; total: number }> {
+    let users = this.users;
+
+    if (name) {
+      users = users.filter(
+        (user) => user.name.toLowerCase().indexOf(name.toLowerCase()) > -1,
+      );
+    }
+
+    const total = users.length;
+
+    users = users.splice((page - 1) * amount, amount);
+
+    return { users, total };
   }
 
   async create({

@@ -1,8 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDTO } from 'src/modules/accounts/dtos/CreateUserDTO';
+import { FindAllUsersDTO } from 'src/modules/accounts/dtos/FindAllUsersDTO';
 import { UpdateUserDTO } from 'src/modules/accounts/dtos/UpdateUserDTO';
 import { IUsersRepository } from 'src/modules/accounts/repositories/IUsersRepository';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { User } from '../entities/User';
 
 class UsersRepository implements IUsersRepository {
@@ -17,6 +18,25 @@ class UsersRepository implements IUsersRepository {
 
   async findByEmail(email: string): Promise<User> {
     return await this.repository.findOne({ where: { email } });
+  }
+
+  async findAll({
+    name,
+    page = 1,
+    amount = 10,
+  }: FindAllUsersDTO): Promise<{ users: User[]; total: number }> {
+    const [users, total] = await this.repository.findAndCount({
+      where: {
+        name: ILike(name ? `%${name}%` : '%%'),
+      },
+      skip: (page - 1) * amount,
+      take: amount,
+      order: {
+        name: 'ASC',
+      },
+    });
+
+    return { users, total };
   }
 
   async create({

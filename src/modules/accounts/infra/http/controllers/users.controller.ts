@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
   UsePipes,
   ValidationPipe,
@@ -18,6 +19,8 @@ import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -29,6 +32,9 @@ import { CreateUserOutput } from '../../../useCases/createUser/CreateUserTypes';
 import { CreateUserUseCase } from '../../../useCases/createUser/CreateUserUseCase';
 import { CreateUserValidator } from '../../validators/CreateUserValidator';
 import { UpdateUserValidator } from '../../validators/UpdateUserValidator';
+import { FindAllUsersOutput } from 'src/modules/accounts/useCases/findAllUsers/FindAllUsersTypes';
+import { FindAllUsersUseCase } from 'src/modules/accounts/useCases/findAllUsers/FindAllUsersUseCase';
+import { PlayersValidationParamsPagination } from 'src/shared/infra/pipes/playersValidationParamsPagination.pipe';
 
 @Controller('users')
 @ApiTags('Users')
@@ -36,6 +42,7 @@ import { UpdateUserValidator } from '../../validators/UpdateUserValidator';
 export class UsersController {
   constructor(
     private findUserByIdUseCase: FindUserByIdUseCase,
+    private findAllUsersUseCase: FindAllUsersUseCase,
     private createUserUseCase: CreateUserUseCase,
     private updateUserUseCase: UpdateUserUseCase,
     private deleteUserUseCase: DeleteUserUseCase,
@@ -48,6 +55,28 @@ export class UsersController {
     const user = await this.findUserByIdUseCase.execute(id);
 
     return user;
+  }
+
+  @Get('/')
+  @ApiOkResponse({ description: 'Find all users' })
+  @ApiQuery({ name: 'name', required: false })
+  @ApiQuery({ name: 'page', required: true })
+  @ApiQuery({ name: 'amount', required: true })
+  public async findAll(
+    @Query('name') name: string,
+    @Query('page', PlayersValidationParamsPagination) page: number,
+    @Query('amount', PlayersValidationParamsPagination) amount: number,
+  ): Promise<{
+    users: FindAllUsersOutput[];
+    total: number;
+  }> {
+    const users = await this.findAllUsersUseCase.execute({
+      name,
+      page,
+      amount,
+    });
+
+    return users;
   }
 
   @Post('/')
