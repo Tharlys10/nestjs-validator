@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { hash } from 'bcrypt';
+import { UserMap } from '../../mapper/UserMap';
 import { IUsersRepository } from '../../repositories/IUsersRepository';
 import { CreateUserInput, CreateUserOutput } from './CreateUserTypes';
 
@@ -32,10 +33,7 @@ class CreateUserUseCase {
       code_active,
     });
 
-    delete user.password;
-    delete user.code_active;
-
-    return user;
+    return UserMap.toCreateUserDTO(user);
   }
 
   /**
