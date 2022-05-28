@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpStatus,
   Param,
   Post,
@@ -19,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { DeleteUserUseCase } from 'src/modules/accounts/useCases/deleteUser/DeleteUserUseCase';
 import { UpdateUserUseCase } from 'src/modules/accounts/useCases/updateUser/UpdateUserUseCase';
 import { CreateUserOutput } from '../../../useCases/createUser/CreateUserTypes';
 import { CreateUserUseCase } from '../../../useCases/createUser/CreateUserUseCase';
@@ -32,6 +34,7 @@ export class UsersController {
   constructor(
     private createUserUseCase: CreateUserUseCase,
     private updateUserUseCase: UpdateUserUseCase,
+    private deleteUserUseCase: DeleteUserUseCase,
   ) {}
 
   @Post('/')
@@ -67,6 +70,18 @@ export class UsersController {
       name,
       email,
     });
+
+    return response.status(HttpStatus.NO_CONTENT).send();
+  }
+
+  @Delete('/:id')
+  @ApiNoContentResponse({ description: 'Deleted user' })
+  @ApiNotFoundResponse({ description: 'User not exists' })
+  public async delete(
+    @Param('id') id: string,
+    @Res() response: Response,
+  ): Promise<Response> {
+    await this.deleteUserUseCase.execute(id);
 
     return response.status(HttpStatus.NO_CONTENT).send();
   }

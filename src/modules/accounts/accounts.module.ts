@@ -4,6 +4,7 @@ import { UsersController } from './infra/http/controllers/users.controller';
 import { User } from './infra/typeorm/entities/User';
 import { UsersRepository } from './infra/typeorm/repositories/UsersRepository';
 import { CreateUserUseCase } from './useCases/createUser/CreateUserUseCase';
+import { DeleteUserUseCase } from './useCases/deleteUser/DeleteUserUseCase';
 import { UpdateUserUseCase } from './useCases/updateUser/UpdateUserUseCase';
 
 @Module({
@@ -12,6 +13,7 @@ import { UpdateUserUseCase } from './useCases/updateUser/UpdateUserUseCase';
   providers: [
     CreateUserUseCase,
     UpdateUserUseCase,
+    DeleteUserUseCase,
     {
       provide: 'UsersRepository',
       inject: [UsersRepository],

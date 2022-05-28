@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDTO } from 'src/modules/accounts/dtos/CreateUserDTO';
 import { UpdateUserDTO } from 'src/modules/accounts/dtos/UpdateUserDTO';
 import { IUsersRepository } from 'src/modules/accounts/repositories/IUsersRepository';
-import { EntityManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../entities/User';
 
 class UsersRepository implements IUsersRepository {
@@ -37,6 +37,10 @@ class UsersRepository implements IUsersRepository {
       name,
       email,
     });
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
   }
 }
 
