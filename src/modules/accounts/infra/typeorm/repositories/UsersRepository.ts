@@ -1,15 +1,15 @@
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDTO } from 'src/modules/accounts/dtos/CreateUserDTO';
+import { UpdateUserDTO } from 'src/modules/accounts/dtos/UpdateUserDTO';
 import { IUsersRepository } from 'src/modules/accounts/repositories/IUsersRepository';
-import { EntityManager, EntityRepository, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from '../entities/User';
 
-@EntityRepository(User)
 class UsersRepository implements IUsersRepository {
-  private repository: Repository<User>;
-
-  constructor(manager: EntityManager) {
-    this.repository = manager.getRepository(User);
-  }
+  constructor(
+    @InjectRepository(User)
+    private repository: Repository<User>,
+  ) {}
 
   async findById(id: string): Promise<User> {
     return await this.repository.findOne({ where: { id } });
@@ -30,6 +30,13 @@ class UsersRepository implements IUsersRepository {
     await this.repository.save(user);
 
     return user;
+  }
+
+  async update({ id, name, email }: UpdateUserDTO): Promise<void> {
+    await this.repository.update(id, {
+      name,
+      email,
+    });
   }
 }
 
