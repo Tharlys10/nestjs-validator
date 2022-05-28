@@ -83,7 +83,7 @@ RF
 
 RN
 
-- should not be able to search user by id;
+- should not be able to search user by id if user not exists;
 
 Get all:
 

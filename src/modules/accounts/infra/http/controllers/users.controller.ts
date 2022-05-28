@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpStatus,
   Param,
   Post,
@@ -20,7 +21,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Response } from 'express';
+import { FindUserByIdUseCase } from 'src/modules/accounts/useCases/findUserById/FindUserByIdUseCase';
 import { DeleteUserUseCase } from 'src/modules/accounts/useCases/deleteUser/DeleteUserUseCase';
+import { FindUserByIdOutput } from 'src/modules/accounts/useCases/findUserById/FindUserByIdTypes';
 import { UpdateUserUseCase } from 'src/modules/accounts/useCases/updateUser/UpdateUserUseCase';
 import { CreateUserOutput } from '../../../useCases/createUser/CreateUserTypes';
 import { CreateUserUseCase } from '../../../useCases/createUser/CreateUserUseCase';
@@ -32,10 +35,20 @@ import { UpdateUserValidator } from '../../validators/UpdateUserValidator';
 @ApiInternalServerErrorResponse({ description: 'Internal server error' })
 export class UsersController {
   constructor(
+    private findUserByIdUseCase: FindUserByIdUseCase,
     private createUserUseCase: CreateUserUseCase,
     private updateUserUseCase: UpdateUserUseCase,
     private deleteUserUseCase: DeleteUserUseCase,
   ) {}
+
+  @Get('/:id')
+  @ApiOkResponse({ description: 'Find user by id' })
+  @ApiNotFoundResponse({ description: 'User not exists' })
+  public async findById(@Param('id') id: string): Promise<FindUserByIdOutput> {
+    const user = await this.findUserByIdUseCase.execute(id);
+
+    return user;
+  }
 
   @Post('/')
   @UsePipes(ValidationPipe)

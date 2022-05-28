@@ -41,6 +41,7 @@ class UsersRepositoryInMemory implements IUsersRepository {
 
     this.users[index].name = name;
     this.users[index].email = email;
+    this.users[index].updated_at = new Date();
   }
 
   async delete(id: string): Promise<void> {
