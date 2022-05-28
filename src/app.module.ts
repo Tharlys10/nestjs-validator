@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersModule } from './modules/users/users.module';
+import { AccountsModule } from './modules/accounts/accounts.module';
 
 import ormconfig from './shared/infra/typeorm';
 
@@ -9,7 +9,7 @@ import ormconfig from './shared/infra/typeorm';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(ormconfig),
-    UsersModule,
+    AccountsModule,
   ],
   controllers: [],
   providers: [],

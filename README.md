@@ -14,7 +14,7 @@ Allows use of decorator and non-decorator based validation. Internally uses <a h
 ## Models
 
 ```ts
-users: {
+user: {
   id: string;
   name: string;
   email: string;
@@ -41,6 +41,7 @@ RN
 - should not be able create a new user if e-mail already exists;
 - account_active should must default false;
 - code_active should is form 6 digits numerals;
+- password must be encrypted
 
 Update:
 

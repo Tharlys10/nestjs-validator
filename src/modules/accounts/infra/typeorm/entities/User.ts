@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import {
   Column,
   CreateDateColumn,
@@ -31,6 +32,12 @@ class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  constructor() {
+    if (!this.id) {
+      this.id = uuid();
+    }
+  }
 }
 
 export { User };
